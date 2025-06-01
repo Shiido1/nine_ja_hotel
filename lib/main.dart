@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:nine_ja_hotel/core/core_folder/app/app.locator.dart'
+    show locator, setupLocator;
+import 'package:stacked_services/stacked_services.dart';
+import 'core/core_folder/app/app.router.dart';
+import 'core/core_folder/manager/shared_preferance.dart';
 
-import 'core/router/router.dart';
-import 'core/session_manager.dart';
-import 'screens/login_screen.dart';
+final navigate = locator<NavigationService>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await session.initializeSession();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  setupLocator();
+  await locator<SharedPreferencesService>().initilize();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
-
-  final _appRouter = AppRouter();
 
   // This widget is the root of your application.
   @override
@@ -25,7 +32,12 @@ class MyApp extends StatelessWidget {
       ),
 
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      initialRoute:
+          SharedPreferencesService.instance.isLoggedIn == true
+              ? Routes.dashboard
+              : Routes.loginScreen,
+      navigatorKey: StackedService.navigatorKey,
+      onGenerateRoute: StackedRouter().onGenerateRoute,
     );
   }
 }

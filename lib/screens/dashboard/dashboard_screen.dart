@@ -1,7 +1,5 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nine_ja_hotel/screens/image.dart';
 
@@ -11,15 +9,14 @@ import '../home_screen.dart';
 import '../room_category_screen.dart';
 import '../text_widget.dart';
 
-@RoutePage()
-class Dashboard extends ConsumerStatefulWidget {
+class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _DashboardState();
+  State<Dashboard> createState() => _DashboardState();
 }
 
-class _DashboardState extends ConsumerState<Dashboard> {
+class _DashboardState extends State<Dashboard> {
   int _currentIndex = 0;
 
   final List<Widget> _body = [
