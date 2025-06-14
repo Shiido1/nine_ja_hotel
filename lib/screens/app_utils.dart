@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
+import 'package:nine_ja_hotel/screens/app_color.dart';
 
 class AppUtils {
   static Future<void> snackbar(
@@ -20,7 +21,7 @@ class AppUtils {
       duration: const Duration(seconds: 5),
       reverseAnimationCurve: Curves.decelerate,
       forwardAnimationCurve: Curves.elasticOut,
-      backgroundColor: error ? Colors.red : Colors.green,
+      backgroundColor: error ? AppColor.yellow : Colors.green,
     ).show(context!);
   }
 }

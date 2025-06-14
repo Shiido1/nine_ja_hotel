@@ -1,4 +1,8 @@
 import 'package:injectable/injectable.dart';
+import 'package:nine_ja_hotel/core/connect_end/model/get_all_booking_response_model/get_all_booking_response_model.dart';
+import 'package:nine_ja_hotel/core/connect_end/model/get_all_halls_response_model/get_all_halls_response_model.dart';
+import 'package:nine_ja_hotel/core/connect_end/model/get_all_room_response_model/get_all_room_response_model.dart';
+import 'package:nine_ja_hotel/core/connect_end/model/get_room_category_response_model/get_room_category_response_model.dart';
 import 'package:nine_ja_hotel/core/connect_end/model/get_stat_response_model/get_stat_response_model.dart';
 import 'package:nine_ja_hotel/core/connect_end/model/make_room_available_response_model/make_room_available_response_model.dart';
 import 'package:nine_ja_hotel/core/connect_end/model/set_unavailable_entity_model.dart';
@@ -6,6 +10,7 @@ import 'package:nine_ja_hotel/core/connect_end/model/user_profile_response_model
 import '../connect_end/model/login_entity_model.dart';
 import '../connect_end/model/login_response_model/login_response_model.dart';
 import '../connect_end/model/make_hall_available_response_model/make_hall_available_response_model.dart';
+import '../connect_end/model/set_room_all_unavailable_response_model/set_room_all_unavailable_response_model.dart';
 import '../core_folder/app/app.locator.dart';
 import '../core_folder/app/app.logger.dart';
 import '../core_folder/network/network_service.dart';
@@ -56,22 +61,22 @@ class AuthApi {
     }
   }
 
-  Future<dynamic> getAllRooms(String date) async {
+  Future<GetAllRoomResponseModel> getAllRooms(String date) async {
     try {
       final response = await _service.call(
         UrlConfig.rooms,
-        RequestMethod.get,
+        RequestMethod.getParams,
         queryParams: {'date': date},
       );
       logger.d(response.data);
-      return response.data;
+      return GetAllRoomResponseModel.fromJson(response.data);
     } catch (e) {
       logger.d("response:$e");
       rethrow;
     }
   }
 
-  Future<dynamic> getAllHalls(String date) async {
+  Future<GetAllHallsResponseModel> getAllHalls(String date) async {
     try {
       final response = await _service.call(
         UrlConfig.halls,
@@ -79,21 +84,21 @@ class AuthApi {
         queryParams: {'date': date},
       );
       logger.d(response.data);
-      return response.data;
+      return GetAllHallsResponseModel.fromJson(response.data);
     } catch (e) {
       logger.d("response:$e");
       rethrow;
     }
   }
 
-  Future<dynamic> roomCategory() async {
+  Future<GetRoomCategoryResponseModel> roomCategory() async {
     try {
       final response = await _service.call(
         UrlConfig.room_categories,
         RequestMethod.get,
       );
       logger.d(response.data);
-      return response.data;
+      return GetRoomCategoryResponseModel.fromJson(response.data);
     } catch (e) {
       logger.d("response:$e");
       rethrow;
@@ -128,13 +133,31 @@ class AuthApi {
     }
   }
 
-  Future<dynamic> makeHallUnAvailable({
+  Future<SetRoomAllUnavailableResponseModel> makeRoomUnAvailable({
     String? id,
     SetUnavailableEntityModel? unavailable,
   }) async {
     try {
       final response = await _service.call(
         '${UrlConfig.room}/$id/set-unavailability',
+        RequestMethod.patch,
+        data: unavailable?.toJson(),
+      );
+      logger.d(response.data);
+      return SetRoomAllUnavailableResponseModel.fromJson(response.data);
+    } catch (e) {
+      logger.d("response:$e");
+      rethrow;
+    }
+  }
+
+  Future<dynamic> makeHallUnAvailable({
+    String? id,
+    SetUnavailableEntityModel? unavailable,
+  }) async {
+    try {
+      final response = await _service.call(
+        '${UrlConfig.hall}/$id/set-unavailability',
         RequestMethod.patch,
         data: unavailable?.toJson(),
       );
@@ -146,14 +169,14 @@ class AuthApi {
     }
   }
 
-  Future<dynamic> allBookings() async {
+  Future<GetAllBookingResponseModel> allBookings() async {
     try {
       final response = await _service.call(
         UrlConfig.bookings,
         RequestMethod.get,
       );
       logger.d(response.data);
-      return response.data;
+      return GetAllBookingResponseModel.fromJson(response.data);
     } catch (e) {
       logger.d("response:$e");
       rethrow;

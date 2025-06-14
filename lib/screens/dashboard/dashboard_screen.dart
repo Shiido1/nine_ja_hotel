@@ -19,6 +19,19 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   int _currentIndex = 0;
 
+  static const List<Option> options = [
+    Option(name: "Home", icon: AppImage.room, color: AppColor.white),
+    Option(name: "Bookings", icon: AppImage.reservation, color: AppColor.white),
+    Option(
+      name: "Room Category",
+      icon: AppImage.categgory,
+      color: AppColor.white,
+    ),
+    Option(name: "Hall", icon: AppImage.hall, color: AppColor.white),
+  ];
+
+  Option get option => options[_currentIndex];
+
   final List<Widget> _body = [
     HomeScreen(),
     BookingsScreen(),
@@ -89,57 +102,39 @@ class _DashboardState extends State<Dashboard> {
         body: Center(child: _body[_currentIndex]),
         bottomNavigationBar: Theme(
           data: ThemeData(
-            splashColor: AppColor.transparent,
-            highlightColor: AppColor.transparent,
+            // splashColor: AppColor.redDark.withOpacity(.9),
+            highlightColor: AppColor.redDark.withOpacity(.9),
           ),
           child: BottomNavigationBar(
             currentIndex: _currentIndex,
             onTap: (index) => setState(() => _currentIndex = index),
-            backgroundColor: const Color.fromARGB(255, 195, 191, 191),
-            selectedItemColor: AppColor.white,
-            unselectedItemColor: AppColor.black,
-            selectedLabelStyle: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-            unselectedLabelStyle: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-            type: BottomNavigationBarType.fixed,
+            backgroundColor: option.color,
+            // selectedFontSize: 16.0,
+            selectedLabelStyle: TextStyle(fontWeight: FontWeight.w500,fontSize: 16.60),
+            type: BottomNavigationBarType.shifting,
             items: [
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  _currentIndex == 0 ? AppImage.room : AppImage.rRoom,
-                  color: _currentIndex == 0 ? AppColor.white : AppColor.black,
+              for (final option in options)
+                BottomNavigationBarItem(
+                  backgroundColor: AppColor.redDark,
+                  icon: SvgPicture.asset(
+                    option.icon,
+                    color: AppColor.white,
+                    height: 26,
+                    width: 25.0,
+                  ),
+                  label: option.name,
                 ),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  _currentIndex == 1 ? AppImage.room : AppImage.rRoom,
-                  color: _currentIndex == 1 ? AppColor.white : AppColor.black,
-                ),
-                label: 'Bookings',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  _currentIndex == 2 ? AppImage.room : AppImage.rRoom,
-                  color: _currentIndex == 2 ? AppColor.white : AppColor.black,
-                ),
-                label: 'Room Category',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  _currentIndex == 3 ? AppImage.room : AppImage.rRoom,
-                  color: _currentIndex == 3 ? AppColor.white : AppColor.black,
-                ),
-                label: 'Pos',
-              ),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+class Option {
+  final String name;
+  final String icon;
+  final Color color;
+  const Option({required this.name, required this.icon, required this.color});
 }

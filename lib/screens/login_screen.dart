@@ -27,7 +27,7 @@ class LoginScreen extends StatelessWidget {
       disposeViewModel: false,
       builder: (_, AuthViewModel model, __) {
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: AppColor.redDark,
           body: SingleChildScrollView(
             padding: EdgeInsets.only(top: 100, left: 16, right: 16),
             child: Form(
@@ -38,7 +38,7 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(height: 20),
                   TextView(
                     text: '9jahotels',
-                    color: AppColor.black,
+                    color: AppColor.white,
                     fontSize: 27,
                     fontWeight: FontWeight.w600,
                   ),
@@ -52,7 +52,7 @@ class LoginScreen extends StatelessWidget {
                       73,
                       73,
                     ).withOpacity(.5),
-                    color: AppColor.white,
+                    color: AppColor.red.withOpacity(.4),
                     child: Container(
                       width: double.infinity,
                       margin: EdgeInsets.symmetric(
@@ -65,7 +65,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(22),
-                        color: AppColor.white,
+                        color: AppColor.redDark,
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -73,7 +73,7 @@ class LoginScreen extends StatelessWidget {
                         children: [
                           TextView(
                             text: 'Sign',
-                            color: AppColor.black,
+                            color: AppColor.white,
                             fontSize: 30,
                             fontWeight: FontWeight.w600,
                           ),
@@ -81,7 +81,7 @@ class LoginScreen extends StatelessWidget {
                           SizedBox(height: 15.0),
                           TextFormWidget(
                             hint: 'Email address',
-                            hintColor: AppColor.black,
+                            hintColor: AppColor.white,
                             label: '',
                             labelStyle: TextStyle(
                               fontWeight: FontWeight.w400,
@@ -98,7 +98,7 @@ class LoginScreen extends StatelessWidget {
                           SizedBox(height: 15.0),
                           TextFormWidget(
                             hint: 'Password',
-                            hintColor: AppColor.black,
+                            hintColor: AppColor.white,
                             label: '',
                             labelStyle: TextStyle(
                               fontWeight: FontWeight.w400,
@@ -111,6 +111,11 @@ class LoginScreen extends StatelessWidget {
                             isFilled: true,
                             controller: passwordController,
                             validator: AppValidator.validateString(),
+                            suffixIcon: !model.isTogglePassword
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        obscureText: !model.isTogglePassword,
+                        onPasswordToggle: model.isOnTogglePassword,
                           ),
                           SizedBox(height: 35.0),
                           ButtonWidget(
@@ -118,7 +123,7 @@ class LoginScreen extends StatelessWidget {
                             color: AppColor.white,
                             border: 14,
                             buttonWidth: double.infinity,
-                            buttonColor: const Color.fromARGB(255, 247, 161, 3),
+                            buttonColor: const Color.fromARGB(255, 101, 32, 27),
                             buttonBorderColor: Colors.transparent,
                             isLoading: model.isLoading,
                             onPressed: () {

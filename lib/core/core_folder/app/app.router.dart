@@ -17,13 +17,22 @@ class Routes {
 
   static const dashboard = '/Dashboard';
 
-  static const all = <String>{loginScreen, dashboard};
+  static const all = <String>{
+    loginScreen,
+    dashboard,
+  };
 }
 
 class StackedRouter extends _i1.RouterBase {
   final _routes = <_i1.RouteDef>[
-    _i1.RouteDef(Routes.loginScreen, page: _i2.LoginScreen),
-    _i1.RouteDef(Routes.dashboard, page: _i3.Dashboard),
+    _i1.RouteDef(
+      Routes.loginScreen,
+      page: _i2.LoginScreen,
+    ),
+    _i1.RouteDef(
+      Routes.dashboard,
+      page: _i3.Dashboard,
+    ),
   ];
 
   final _pagesMap = <Type, _i1.StackedRouteFactory>{
@@ -80,16 +89,14 @@ extension NavigatorStateExtension on _i5.NavigationService {
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
-    transition,
+        transition,
   }) async {
-    return navigateTo<dynamic>(
-      Routes.loginScreen,
-      arguments: LoginScreenArguments(key: key),
-      id: routerId,
-      preventDuplicates: preventDuplicates,
-      parameters: parameters,
-      transition: transition,
-    );
+    return navigateTo<dynamic>(Routes.loginScreen,
+        arguments: LoginScreenArguments(key: key),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
   }
 
   Future<dynamic> navigateToDashboard([
@@ -97,15 +104,13 @@ extension NavigatorStateExtension on _i5.NavigationService {
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
-    transition,
+        transition,
   ]) async {
-    return navigateTo<dynamic>(
-      Routes.dashboard,
-      id: routerId,
-      preventDuplicates: preventDuplicates,
-      parameters: parameters,
-      transition: transition,
-    );
+    return navigateTo<dynamic>(Routes.dashboard,
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
   }
 
   Future<dynamic> replaceWithLoginScreen({
@@ -114,16 +119,14 @@ extension NavigatorStateExtension on _i5.NavigationService {
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
-    transition,
+        transition,
   }) async {
-    return replaceWith<dynamic>(
-      Routes.loginScreen,
-      arguments: LoginScreenArguments(key: key),
-      id: routerId,
-      preventDuplicates: preventDuplicates,
-      parameters: parameters,
-      transition: transition,
-    );
+    return replaceWith<dynamic>(Routes.loginScreen,
+        arguments: LoginScreenArguments(key: key),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
   }
 
   Future<dynamic> replaceWithDashboard([
@@ -131,14 +134,12 @@ extension NavigatorStateExtension on _i5.NavigationService {
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
-    transition,
+        transition,
   ]) async {
-    return replaceWith<dynamic>(
-      Routes.dashboard,
-      id: routerId,
-      preventDuplicates: preventDuplicates,
-      parameters: parameters,
-      transition: transition,
-    );
+    return replaceWith<dynamic>(Routes.dashboard,
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
   }
 }
