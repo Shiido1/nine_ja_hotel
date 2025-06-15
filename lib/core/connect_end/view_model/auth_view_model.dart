@@ -12,8 +12,10 @@ import '../../../screens/text_widget.dart';
 import '../../core_folder/app/app.logger.dart';
 import '../model/get_all_booking_response_model/get_all_booking_response_model.dart';
 import '../model/get_all_halls_response_model/get_all_halls_response_model.dart';
+import '../model/get_all_halls_response_model/hall.dart';
 import '../model/get_all_room_response_model/get_all_room_response_model.dart';
 import '../model/get_all_room_response_model/room.dart';
+import '../model/get_room_category_response_model/get_room_category_response_model.dart';
 import '../model/get_stat_response_model/get_stat_response_model.dart';
 import '../model/login_entity_model.dart';
 import '../model/login_response_model/login_response_model.dart';
@@ -34,6 +36,8 @@ class AuthViewModel extends BaseViewModel {
 
   bool get isLoading => _isLoading;
   bool _isLoading = false;
+  bool get isLoadingDash => _isLoadingDash;
+  bool _isLoadingDash = false;
 
   LoginResponseModel? get loginResponse => _loginResponse;
   LoginResponseModel? _loginResponse;
@@ -61,6 +65,9 @@ class AuthViewModel extends BaseViewModel {
   SetRoomAllUnavailableResponseModel? get setRoomAllUnavailableResponseModel =>
       _setRoomAllUnavailableResponseModel;
   SetRoomAllUnavailableResponseModel? _setRoomAllUnavailableResponseModel;
+  GetRoomCategoryResponseModel? get getRoomCategoryResponseModel =>
+      _getRoomCategoryResponseModel;
+  GetRoomCategoryResponseModel? _getRoomCategoryResponseModel;
   DateTime now = DateTime.now();
   DateTime from = DateTime.now();
   DateTime to = DateTime.now();
@@ -68,14 +75,19 @@ class AuthViewModel extends BaseViewModel {
   bool get isTogglePassword => _isTogglePassword;
   bool _isTogglePassword = false;
 
+  double convertNairaToDollar(
+    double nairaAmount, {
+    double exchangeRate = 1500.0,
+  }) {
+    // exchangeRate is optional: defaults to 1 USD = 1500 NGN
+    return nairaAmount / exchangeRate;
+  }
+
   selectDialog(context, {Room? room}) => PopupMenuButton<String>(
     padding: EdgeInsets.zero,
     menuPadding: EdgeInsets.zero,
     color: AppColor.white,
-    onSelected: (value) {
-      // handle your menu actions here
-      print('Selected: $value');
-    },
+    onSelected: (value) {},
     icon: Card(
       elevation: 2,
       color: roomStatus(room?.isAvailable),
@@ -145,6 +157,75 @@ class AuthViewModel extends BaseViewModel {
                       context: context,
                       id: room?.id?.toString(),
                       status: room?.isAvailable,
+                    ),
+              ),
+        ],
+  );
+
+  selectHallEnabilitiesDialog(context, {Hall? hall}) => PopupMenuButton<String>(
+    color: AppColor.white,
+    onSelected: (value) {},
+    icon: Container(
+      margin: EdgeInsets.only(top: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.edit_square, color: AppColor.yellow, size: 24),
+          SizedBox(width: 5.2),
+          TextView(
+            text: 'Edit',
+            color: const Color.fromARGB(255, 72, 45, 3),
+            fontSize: 18.20,
+            fontWeight: FontWeight.w600,
+          ),
+        ],
+      ),
+    ),
+    itemBuilder:
+        (_) => [
+          hall?.status == 'available'
+              ? PopupMenuItem(
+                value: 'unavailable',
+
+                child: Row(
+                  children: [
+                    Icon(Icons.visibility_off_outlined),
+                    SizedBox(width: 6.2),
+                    TextView(
+                      text: 'Set Unavailability',
+                      color: AppColor.black,
+                      fontSize: 16.30,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ],
+                ),
+
+                onTap:
+                    () => selectHallDateAvailablibityFrom(
+                      context: context,
+                      id: hall?.id?.toString(),
+                      status: hall?.status,
+                    ),
+              )
+              : PopupMenuItem(
+                value: 'available',
+                child: Row(
+                  children: [
+                    Icon(Icons.visibility_outlined),
+                    SizedBox(width: 3.2),
+                    TextView(
+                      text: 'Set Availability',
+                      color: AppColor.black,
+                      fontSize: 16.30,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ],
+                ),
+                onTap:
+                    () => selectHallDateAvailablibityFrom(
+                      context: context,
+                      id: hall?.id?.toString(),
+                      status: hall?.status,
                     ),
               ),
         ],
@@ -224,6 +305,39 @@ class AuthViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  Future<void> selectHallDateAvailablibityFrom({
+    BuildContext? context,
+    String? status,
+    String? id,
+  }) async {
+    final DateTime? picked = await showDatePicker(
+      helpText: 'Select Availability from:',
+      context: context!,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      from = picked;
+      Future.delayed(Duration(seconds: 1), () {
+        selectHallDateAvailablibityTo(context: context, id: id, status: status);
+      });
+    }
+    notifyListeners();
+  }
+
   Future<void> selectRoomDateAvailablibityTo({
     BuildContext? context,
     String? status,
@@ -261,6 +375,48 @@ class AuthViewModel extends BaseViewModel {
         );
       } else {
         makeRoomAvailable(contxt: context, id: id);
+      }
+    }
+    notifyListeners();
+  }
+
+  Future<void> selectHallDateAvailablibityTo({
+    BuildContext? context,
+    String? status,
+    String? id,
+  }) async {
+    final DateTime? picked = await showDatePicker(
+      helpText: 'Select Availability to:',
+      context: context!,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      to = picked;
+      if (status == 'available') {
+        makeHallUnAvailable(
+          contxt: context,
+          id: id,
+          unavailable: SetUnavailableEntityModel(
+            from: DateFormat('yyyy-MM-dd').format(from),
+            to: DateFormat('yyyy-MM-dd').format(to),
+          ),
+        );
+      } else {
+        makeHallAvailable(contxt: context, id: id);
       }
     }
     notifyListeners();
@@ -318,22 +474,22 @@ class AuthViewModel extends BaseViewModel {
 
   Future<void> getStats({contxt}) async {
     try {
-      _isLoading = true;
+      _isLoadingDash = true;
       _getStatResponseModel = await runBusyFuture(
         repositoryImply.getStats(),
         throwException: true,
       );
 
       if (_getStatResponseModel?.success == true) {
-        _isLoading = false;
-        await AppUtils.snackbar(
+        _isLoadingDash = false;
+        AppUtils.snackbar(
           contxt,
           message: _getStatResponseModel?.message!.toString(),
         );
         // navigate.navigateTo(Routes.dashboard);
       }
     } catch (e) {
-      _isLoading = false;
+      _isLoadingDash = false;
       logger.d(e);
       AppUtils.snackbar(contxt, message: e.toString(), error: true);
     }
@@ -342,14 +498,14 @@ class AuthViewModel extends BaseViewModel {
 
   Future<void> getAllRooms({contxt, String? date}) async {
     try {
-      _isLoading = true;
+      _isLoadingDash = true;
       _getAllRoomResponseModel = await runBusyFuture(
         repositoryImply.getAllRooms(date!),
         throwException: true,
       );
-      _isLoading = false;
+      _isLoadingDash = false;
     } catch (e) {
-      _isLoading = false;
+      _isLoadingDash = false;
       logger.d(e);
       AppUtils.snackbar(contxt, message: e.toString(), error: true);
     }
@@ -359,7 +515,7 @@ class AuthViewModel extends BaseViewModel {
   Future<void> getAllHalls({contxt, String? date}) async {
     try {
       _isLoading = true;
-      await runBusyFuture(
+      _getAllHallsResponseModel = await runBusyFuture(
         repositoryImply.getAllHalls(date!),
         throwException: true,
       );
@@ -371,14 +527,45 @@ class AuthViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  Future<void> getAllHallsReload() async {
+    try {
+      await Future.delayed(Duration(seconds: 1));
+      _getAllHallsResponseModel = await runBusyFuture(
+        repositoryImply.getAllHalls(DateFormat('yyyy-MM-dd').format(now)),
+        throwException: true,
+      );
+    } catch (e) {
+      _isLoading = false;
+      logger.d(e);
+    }
+    notifyListeners();
+  }
+
   Future<void> roomCategory({contxt}) async {
     try {
       _isLoading = true;
-      await runBusyFuture(repositoryImply.roomCategory(), throwException: true);
+      _getRoomCategoryResponseModel = await runBusyFuture(
+        repositoryImply.roomCategory(),
+        throwException: true,
+      );
     } catch (e) {
       _isLoading = false;
       logger.d(e);
       AppUtils.snackbar(contxt, message: e.toString(), error: true);
+    }
+    notifyListeners();
+  }
+
+  Future<void> roomCategoryReload() async {
+    try {
+      await Future.delayed(Duration(seconds: 1));
+      _getRoomCategoryResponseModel = await runBusyFuture(
+        repositoryImply.roomCategory(),
+        throwException: true,
+      );
+    } catch (e) {
+      _isLoading = false;
+      logger.d(e);
     }
     notifyListeners();
   }
@@ -410,6 +597,10 @@ class AuthViewModel extends BaseViewModel {
         repositoryImply.makeHallAvailable(id!),
         throwException: true,
       );
+      await getAllHalls(
+        contxt: contxt,
+        date: DateFormat('yyyy-MM-dd').format(now),
+      );
       _isLoading = false;
     } catch (e) {
       _isLoading = false;
@@ -426,9 +617,13 @@ class AuthViewModel extends BaseViewModel {
   }) async {
     try {
       _isLoading = true;
-      await runBusyFuture(
+      _makeHallAvailableResponseModel = await runBusyFuture(
         repositoryImply.makeHallUnAvailable(id: id!, unavailable: unavailable),
         throwException: true,
+      );
+      await getAllHalls(
+        contxt: contxt,
+        date: DateFormat('yyyy-MM-dd').format(now),
       );
       _isLoading = false;
     } catch (e) {
@@ -474,6 +669,20 @@ class AuthViewModel extends BaseViewModel {
       _isLoading = false;
       logger.d(e);
       AppUtils.snackbar(contxt, message: e.toString(), error: true);
+    }
+    notifyListeners();
+  }
+
+  Future<void> allBookingsReload() async {
+    try {
+      await Future.delayed(Duration(seconds: 1));
+      _getAllBookingResponseModel = await runBusyFuture(
+        repositoryImply.allBookings(),
+        throwException: true,
+      );
+    } catch (e) {
+      _isLoading = false;
+      logger.d(e);
     }
     notifyListeners();
   }

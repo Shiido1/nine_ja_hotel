@@ -69,7 +69,7 @@ class AuthRepoImpl {
     return response;
   }
 
-  Future<dynamic> makeHallUnAvailable({
+  Future<MakeHallAvailableResponseModel> makeHallUnAvailable({
     String? id,
     SetUnavailableEntityModel? unavailable,
   }) async {

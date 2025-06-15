@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -5,6 +7,7 @@ import 'package:nine_ja_hotel/screens/image.dart';
 
 import '../app_color.dart';
 import '../bookings_screen.dart';
+import '../hall_screen.dart';
 import '../home_screen.dart';
 import '../room_category_screen.dart';
 import '../text_widget.dart';
@@ -22,11 +25,7 @@ class _DashboardState extends State<Dashboard> {
   static const List<Option> options = [
     Option(name: "Home", icon: AppImage.room, color: AppColor.white),
     Option(name: "Bookings", icon: AppImage.reservation, color: AppColor.white),
-    Option(
-      name: "Room Category",
-      icon: AppImage.categgory,
-      color: AppColor.white,
-    ),
+    Option(name: "Room.Cate", icon: AppImage.categgory, color: AppColor.white),
     Option(name: "Hall", icon: AppImage.hall, color: AppColor.white),
   ];
 
@@ -36,7 +35,7 @@ class _DashboardState extends State<Dashboard> {
     HomeScreen(),
     BookingsScreen(),
     RoomCategoryScreen(),
-    Container(),
+    HallScreen(),
   ];
 
   Future<bool> willPopControl() async {
@@ -95,7 +94,6 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: willPopControl,
       child: Scaffold(
@@ -109,8 +107,11 @@ class _DashboardState extends State<Dashboard> {
             currentIndex: _currentIndex,
             onTap: (index) => setState(() => _currentIndex = index),
             backgroundColor: option.color,
-            // selectedFontSize: 16.0,
-            selectedLabelStyle: TextStyle(fontWeight: FontWeight.w500,fontSize: 16.60),
+            selectedLabelStyle: TextStyle(
+              color: AppColor.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 17.6,
+            ),
             type: BottomNavigationBarType.shifting,
             items: [
               for (final option in options)
@@ -119,8 +120,8 @@ class _DashboardState extends State<Dashboard> {
                   icon: SvgPicture.asset(
                     option.icon,
                     color: AppColor.white,
-                    height: 26,
-                    width: 25.0,
+                    height: 29.0,
+                    width: 28.0,
                   ),
                   label: option.name,
                 ),

@@ -80,7 +80,7 @@ class AuthApi {
     try {
       final response = await _service.call(
         UrlConfig.halls,
-        RequestMethod.get,
+        RequestMethod.getParams,
         queryParams: {'date': date},
       );
       logger.d(response.data);
@@ -122,7 +122,7 @@ class AuthApi {
   Future<MakeHallAvailableResponseModel> makeHallAvailable(String id) async {
     try {
       final response = await _service.call(
-        '${UrlConfig.room}/$id',
+        '${UrlConfig.hall}/$id',
         RequestMethod.patch,
       );
       logger.d(response.data);
@@ -151,7 +151,7 @@ class AuthApi {
     }
   }
 
-  Future<dynamic> makeHallUnAvailable({
+  Future<MakeHallAvailableResponseModel> makeHallUnAvailable({
     String? id,
     SetUnavailableEntityModel? unavailable,
   }) async {
@@ -162,7 +162,7 @@ class AuthApi {
         data: unavailable?.toJson(),
       );
       logger.d(response.data);
-      return response.data;
+      return MakeHallAvailableResponseModel.fromJson(response.data);
     } catch (e) {
       logger.d("response:$e");
       rethrow;

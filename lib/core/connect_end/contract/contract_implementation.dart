@@ -34,7 +34,7 @@ class AuthContractsImpl {
       await _api.makeRoomAvailable(id);
   Future<MakeHallAvailableResponseModel> makeHallAvailable(String id) async =>
       await _api.makeHallAvailable(id);
-  Future<dynamic> makeHallUnAvailable({
+  Future<MakeHallAvailableResponseModel> makeHallUnAvailable({
     String? id,
     SetUnavailableEntityModel? unavailable,
   }) async => await _api.makeHallUnAvailable(id: id, unavailable: unavailable);

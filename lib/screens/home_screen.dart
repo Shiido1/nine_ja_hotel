@@ -18,8 +18,8 @@ class HomeScreen extends StatelessWidget {
       viewModelBuilder: () => AuthViewModel(),
       onViewModelReady: (model) async {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
-          model.getStats(contxt: context);
-          model.getAllRooms(
+          await model.getStats(contxt: context);
+          await model.getAllRooms(
             contxt: context,
             date: DateFormat('yyyy-MM-dd').format(model.now),
           );
@@ -287,7 +287,7 @@ class HomeScreen extends StatelessWidget {
                         horizontal: 6,
                       ),
                       child:
-                          model.isLoading
+                          model.isLoadingDash
                               ? Wrap(
                                 alignment: WrapAlignment.center,
                                 spacing: 6,
